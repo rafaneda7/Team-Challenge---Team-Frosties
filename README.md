@@ -29,7 +29,7 @@ Este repositorio incluye lo siguiente:
 
 ## Instalacion 
 
-- clonar el repositorio o descargar el archivo [aqui](https://github.com/rafaneda7/rafaneda7-Team-Challenge---Team-Frosties)
+- clonar el repositorio o descargar el archivo [aqui](https://github.com/rafaneda7/Team-Challenge---Team-Frosties)
 - ejecutar el programa:
 python toolbox_ML.py
 
@@ -37,7 +37,7 @@ python toolbox_ML.py
 
 1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/rafaneda7/rafaneda7-Team-Challenge---Team-Frosties.git
+   git clone https://github.com/rafaneda7/Team-Challenge---Team-Frosties.git
    ```
 2. Importar el script en tu proyecto:
    ```python
