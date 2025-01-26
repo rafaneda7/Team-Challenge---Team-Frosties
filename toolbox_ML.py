@@ -58,3 +58,56 @@ def tipifica_variables(df, umbral_categoria, umbral_continua):
         resultado.append({"nombre_variable": col, "tipo_sugerido": tipo})
 
     return pd.DataFrame(resultado)
+
+
+import pandas as pd
+import numpy as np
+from scipy.stats import chi2_contingency
+
+def get_features_cat_regression(dataframe, target_col, pvalue=0.05):
+    """
+    Identifica columnas categóricas (numéricas con baja cardinalidad o explícitamente categóricas)
+    que tienen una relación significativa con una columna numérica objetivo usando la prueba de Chi-cuadrado.
+
+    Parámetros:
+    - dataframe: pd.DataFrame. El DataFrame de entrada.
+    - target_col: str. Nombre de la columna objetivo, debe ser numérica.
+    - pvalue: float. Nivel de significancia para la prueba Chi-cuadrado.
+
+    Retorna:
+    - Una lista de columnas categóricas significativas o None si no se encuentran.
+    """
+    # Dividir columnas explícitamente categóricas y numéricas
+    explicit_categorical_cols = [col for col in dataframe.select_dtypes(include=['object', 'category']).columns if col != target_col]
+    potential_categorical_cols = [col for col in dataframe.select_dtypes(include=[np.number]).columns
+                                   if col != target_col and dataframe[col].nunique() <= 10]
+
+    # Combinar ambas listas
+    all_categorical_cols = explicit_categorical_cols + potential_categorical_cols
+
+    if not all_categorical_cols:
+        print("Error: No se encontraron columnas categóricas o numéricas con baja cardinalidad.")
+        return None
+
+    significant_features = []
+
+    for col in all_categorical_cols:
+        try:
+            # Crear una tabla de contingencia
+            contingency_table = pd.crosstab(dataframe[col], pd.cut(dataframe[target_col], bins=5))
+
+            # Realizar la prueba de Chi-cuadrado
+            chi2, p, dof, expected = chi2_contingency(contingency_table)
+
+            # Comprobar si el p-valor es menor que el umbral dado
+            if p < pvalue:
+                significant_features.append(col)
+
+        except Exception as e:
+            print(f"Advertencia: Error al procesar la columna '{col}': {e}")
+
+    if not significant_features:
+        print("No se encontraron columnas categóricas con una relación significativa con el target.")
+        return []
+
+    return significant_features
