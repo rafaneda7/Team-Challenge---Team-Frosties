@@ -1,6 +1,7 @@
 # toolbox_ML.py
 
 import pandas as pd
+from scipy.stats import pearsonr
 
 def describe_df(df):
     """
